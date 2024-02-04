@@ -13,6 +13,19 @@
     <field name="mode">primary</field>
     <field name="arch" type="xml">
         <data>
+            <xpath expr="//group[@name='group_by']" position="before">
+                <separator />
+                <filter
+                        name="dom_paid"
+                        string="All Paid"
+                        domain="[('reconciled','=',True)]"
+                    />
+                <filter
+                        name="dom_paid"
+                        string="All/Some Unpaid"
+                        domain="[('reconciled','=',False)]"
+                    />
+            </xpath>
         </data>
     </field>
 </record>
@@ -32,6 +45,7 @@
                 <field name="amount_untaxed" />
                 <field name="amount_tax" />
                 <field name="amount_total" />
+                <field name="reconciled" />
             </xpath>
         </data>
     </field>
@@ -56,6 +70,7 @@
                 <field name="amount_untaxed" />
                 <field name="amount_tax" />
                 <field name="amount_total" />
+                <field name="reconciled" />
             </xpath>
         </data>
     </field>
