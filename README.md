@@ -18,7 +18,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[ssi_project_outsource_work_acceptance](ssi_project_outsource_work_acceptance/) | 14.0.1.0.1 |  | Project Outsource Work Acceptance
+[ssi_project_outsource_work_acceptance](ssi_project_outsource_work_acceptance/) | 14.0.1.1.0 |  | Project Outsource Work Acceptance
 [ssi_project_outsource_work_acceptance_state_change_constrain](ssi_project_outsource_work_acceptance_state_change_constrain/) | 14.0.1.0.1 |  | Project Outsource Work Acceptance + State Change Constrain Integration
 
 [//]: # (end addons)
