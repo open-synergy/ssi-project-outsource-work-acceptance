@@ -100,6 +100,11 @@ class ProjectOutsourceWorkAcceptance(models.Model):
         store=True,
         currency_field="currency_id",
     )
+    reconciled = fields.Boolean(
+        string="Reconciled",
+        compute="_compute_reconciled",
+        store=True,
+    )
     state = fields.Selection(
         selection=[
             ("draft", "Draft"),
@@ -127,6 +132,23 @@ class ProjectOutsourceWorkAcceptance(models.Model):
             record.amount_untaxed = amount_untaxed
             record.amount_tax = amount_tax
             record.amount_total = amount_total
+
+    @api.depends(
+        "outsource_work_ids",
+        "outsource_work_ids.reconciled",
+    )
+    def _compute_reconciled(self):
+        for record in self:
+            result = True
+
+            if len(record.outsource_work_ids) == 0:
+                result = False
+
+            for work in record.outsource_work_ids:
+                if not work.reconciled:
+                    result = False
+
+            record.reconciled = result
 
     @api.model
     def _get_policy_field(self):
