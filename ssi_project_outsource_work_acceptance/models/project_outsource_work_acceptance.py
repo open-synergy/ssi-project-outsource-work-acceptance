@@ -61,6 +61,13 @@ class ProjectOutsourceWorkAcceptance(models.Model):
     # Sequence attribute
     _create_sequence_state = "done"
 
+    # Override mixin outsource work
+    outsource_work_ids = fields.One2many(
+        readonly=True,
+        states={
+            "draft": [("readonly", False)],
+        },
+    )
     date = fields.Date(
         string="Date Acceptance",
         required=True,
