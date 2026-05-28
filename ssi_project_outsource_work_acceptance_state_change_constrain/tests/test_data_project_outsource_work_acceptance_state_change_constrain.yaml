@@ -1,0 +1,49 @@
+scenarios:
+  - name: >-
+      ProjectOutsourceWorkAcceptance - State Change Constrain: record creation with
+      state_change_constrain mixin
+    steps:
+      - step: "Setup - create project"
+        action: "create"
+        model: "project.project"
+        save_as: "project"
+        values:
+          name: "Test Project POWA SCC"
+
+      - step: "Create acceptance record with state_change_constrain mixin"
+        action: "create"
+        model: "project_outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          project_id: "EVAL: registry['project'].id"
+          date: "2024-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REF: product.list0"
+
+      - step: "Assert acceptance created in draft"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+      - step: "Confirm acceptance to test state_change_constrain on transition"
+        action: "call"
+        target: "acceptance"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "acceptance"
+        method: "invalidate_cache"
+
+      - step: "Assert acceptance in confirm state"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"

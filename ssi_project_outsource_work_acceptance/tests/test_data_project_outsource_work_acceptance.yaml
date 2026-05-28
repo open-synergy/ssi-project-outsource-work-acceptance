@@ -1,0 +1,208 @@
+scenarios:
+  - name: "ProjectOutsourceWorkAcceptance - Full Workflow: draft to done"
+    steps:
+      - step: "Setup - create project"
+        action: "create"
+        model: "project.project"
+        save_as: "project"
+        values:
+          name: "Test Project POWA Full"
+
+      - step: "Create acceptance record in draft"
+        action: "create"
+        model: "project_outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          project_id: "EVAL: registry['project'].id"
+          date: "2024-01-15"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REF: product.list0"
+
+      - step: "Assert acceptance created in draft"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          amount_untaxed:
+            type: "value"
+            expected: 0.0
+          amount_tax:
+            type: "value"
+            expected: 0.0
+          amount_total:
+            type: "value"
+            expected: 0.0
+          reconciled:
+            type: "value"
+            expected: false
+
+      - step: "Call onchange_policy_template_id to cover method"
+        action: "call"
+        target: "acceptance"
+        method: "onchange_policy_template_id"
+        as_user: "base.user_admin"
+
+      - step: "Confirm acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "acceptance"
+        method: "invalidate_cache"
+
+      - step: "Assert acceptance in confirm state"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Approve acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_approve_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after approve"
+        action: "call"
+        target: "acceptance"
+        method: "invalidate_cache"
+
+      - step: "Assert acceptance in done state"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "done"
+
+  - name: "ProjectOutsourceWorkAcceptance - Cancel from draft then restart"
+    steps:
+      - step: "Setup - create project for cancel test"
+        action: "create"
+        model: "project.project"
+        save_as: "project"
+        values:
+          name: "Test Project POWA Cancel"
+
+      - step: "Create acceptance record"
+        action: "create"
+        model: "project_outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          project_id: "EVAL: registry['project'].id"
+          date: "2024-02-01"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REF: product.list0"
+
+      - step: "Assert acceptance in draft"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+      - step: "Cancel acceptance from draft"
+        action: "call"
+        target: "acceptance"
+        method: "action_cancel"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after cancel"
+        action: "call"
+        target: "acceptance"
+        method: "invalidate_cache"
+
+      - step: "Assert acceptance cancelled"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "cancel"
+
+      - step: "Restart acceptance from cancel"
+        action: "call"
+        target: "acceptance"
+        method: "action_restart"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after restart"
+        action: "call"
+        target: "acceptance"
+        method: "invalidate_cache"
+
+      - step: "Assert acceptance back in draft"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+
+  - name: "ProjectOutsourceWorkAcceptance - Confirm then reject"
+    steps:
+      - step: "Setup - create project for reject test"
+        action: "create"
+        model: "project.project"
+        save_as: "project"
+        values:
+          name: "Test Project POWA Reject"
+
+      - step: "Create acceptance record"
+        action: "create"
+        model: "project_outsource_work_acceptance"
+        save_as: "acceptance"
+        as_user: "base.user_admin"
+        values:
+          project_id: "EVAL: registry['project'].id"
+          date: "2024-03-01"
+          currency_id: "REF: base.USD"
+          pricelist_id: "REF: product.list0"
+
+      - step: "Confirm acceptance"
+        action: "call"
+        target: "acceptance"
+        method: "action_confirm"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after confirm"
+        action: "call"
+        target: "acceptance"
+        method: "invalidate_cache"
+
+      - step: "Assert acceptance in confirm state"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "confirm"
+
+      - step: "Reject acceptance approval"
+        action: "call"
+        target: "acceptance"
+        method: "action_reject_approval"
+        as_user: "base.user_admin"
+
+      - step: "Invalidate cache after reject"
+        action: "call"
+        target: "acceptance"
+        method: "invalidate_cache"
+
+      - step: "Assert acceptance in reject state"
+        action: "assert"
+        target: "acceptance"
+        asserts:
+          state:
+            type: "value"
+            expected: "reject"
