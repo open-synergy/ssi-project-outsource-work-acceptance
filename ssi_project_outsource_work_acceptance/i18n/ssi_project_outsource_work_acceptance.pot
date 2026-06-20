@@ -228,6 +228,11 @@ msgid "Currency"
 msgstr ""
 
 #. module: ssi_project_outsource_work_acceptance
+#: model_terms:ir.ui.view,arch_db:ssi_project_outsource_work_acceptance.project_outsource_work_acceptance_view_search
+msgid "Date"
+msgstr ""
+
+#. module: ssi_project_outsource_work_acceptance
 #: model:ir.model.fields,field_description:ssi_project_outsource_work_acceptance.field_project_outsource_work_acceptance__date
 msgid "Date Acceptance"
 msgstr ""
@@ -426,6 +431,7 @@ msgstr ""
 
 #. module: ssi_project_outsource_work_acceptance
 #: model:ir.model.fields,field_description:ssi_project_outsource_work_acceptance.field_project_outsource_work_acceptance__project_id
+#: model_terms:ir.ui.view,arch_db:ssi_project_outsource_work_acceptance.project_outsource_work_acceptance_view_search
 msgid "Project"
 msgstr ""
 
