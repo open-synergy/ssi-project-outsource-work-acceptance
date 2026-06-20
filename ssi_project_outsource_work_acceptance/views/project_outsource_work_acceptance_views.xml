@@ -13,6 +13,10 @@
     <field name="mode">primary</field>
     <field name="arch" type="xml">
         <data>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="project_id" />
+                <field name="date" />
+            </xpath>
             <xpath expr="//group[@name='group_by']" position="before">
                 <separator />
                 <filter
@@ -21,10 +25,18 @@
                         domain="[('reconciled','=',True)]"
                     />
                 <filter
-                        name="dom_paid"
+                        name="dom_unpaid"
                         string="All/Some Unpaid"
                         domain="[('reconciled','=',False)]"
                     />
+            </xpath>
+            <xpath expr="//filter[@name='grp_state']" position="after">
+                <filter
+                        name="grp_project"
+                        string="Project"
+                        context="{'group_by':'project_id'}"
+                    />
+                <filter name="grp_date" string="Date" context="{'group_by':'date'}" />
             </xpath>
         </data>
     </field>
